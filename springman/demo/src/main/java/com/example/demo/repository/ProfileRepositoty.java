@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.dto.ProfileDto;
 
+import reactor.core.publisher.Mono;
+
 @Repository
 public class ProfileRepositoty {
 
@@ -22,8 +24,14 @@ public class ProfileRepositoty {
     }
 
 
-    public ProfileDto getProfileById(Integer  id ){
-      return userContainer.get(id);
+    
+    public ProfileDto getProfileById(Integer id) {
+      ProfileDto profile = userContainer.get(id);
+          if (profile == null) {
+            return new ProfileDto("null", "null", -1);
+          }else{
+            return profile;
+          }
     }
 
 

@@ -6,11 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Data
-@AllArgsConstructor
 @Getter
 @Setter
-public class ProfileDto{
-  private String name; 
-  private String position; 
-  private int age; 
+@AllArgsConstructor
+public class Additionanllnfo {
+  private Boolean marriage; 
+  private String strongpoint;
 }

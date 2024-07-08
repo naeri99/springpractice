@@ -8,6 +8,9 @@ import com.example.demo.*;
 public class UserDto {
   
   private Integer userId; 
-  private String profile;
-
+  private ProfileDto profile;
+  // public UserDto(Integer id ,ProfileDto profileDto){
+  //   this.userId = id ;
+  //   this.profile =profileDto;
+  // }
 }

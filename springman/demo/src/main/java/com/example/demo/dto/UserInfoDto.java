@@ -6,11 +6,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Data
-@AllArgsConstructor
 @Getter
 @Setter
-public class ProfileDto{
-  private String name; 
-  private String position; 
-  private int age; 
+@AllArgsConstructor
+public class UserInfoDto {
+  private Integer userId; 
+  private ProfileDto profile;
+  private Additionanllnfo additionanllnfo;
 }
