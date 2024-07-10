@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 
-
+import java.util.concurrent.Executors;
 import com.example.demo.dto.MessageRequest;
 import com.example.demo.dto.ProfileDto;
 import com.example.demo.dto.UserDto;
@@ -12,11 +12,13 @@ import com.example.demo.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.parsing.Problem;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import reactor.core.publisher.Flux;
+import java.time.Duration;
 
 
 @RestController
@@ -53,6 +55,49 @@ public class MessageController {
         return userService.getUserInfo(userIndex);
         
     }
+
+
+
+    @GetMapping("/auth/{user}")
+    public Mono<String> testAuth(@PathVariable String user ){
+        return ReactiveSecurityContextHolder.getContext()
+        .flatMap(context ->{
+            return Mono.just("recevier->"+ user);
+        });
+
+        // return Mono.just(user);
+    }
+
+    @GetMapping("/flux")
+    public Flux<String> sendInteger(){
+
+        // return Flux.create(sink -> {
+        //     Executors.newFixedThreadPool(1).execute(() -> {
+        //         for (int i = 0 ; i <100 ; i++){
+        //             sink.next(i);
+        //             try{
+        //                 Thread.sleep(1);
+        //             }catch(Exception e){
+        //                 sink.error(e);
+        //                 break;
+        //             }   
+        //         }
+        //         sink.complete();
+                
+        //     });
+        // });
+
+        return Flux.range(0,100).delayElements(Duration.ofSeconds(1)).map(item -> String.valueOf(item)).doOnNext(item-> {
+            System.out.println(item);
+        });
+
+        
+        
+
+    }
+
+
+
     
 
 

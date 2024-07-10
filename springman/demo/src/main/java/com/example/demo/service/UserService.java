@@ -22,10 +22,18 @@ public class UserService {
 
 
     public Mono<UserInfoDto> getUserInfo(Integer id){
-        return Mono.just(profileRepository.getProfileById(id)).flatMap(profile-> {
-          Additionanllnfo adinfo=  additionalInfoRepository.getAdditionalInfo(profile.getPosition()); 
-          return Mono.just(new UserInfoDto( id, profile, adinfo));
-        });
+        // return Mono.just(profileRepository.getProfileById(id)).flatMap(profile-> {
+        //   // Additionanllnfo adinfo=  additionalInfoRepository.getAdditionalInfo(profile.getPosition()); 
+        //   // return Mono.just(new UserInfoDto( id, profile, adinfo));
+        //    return Mono.just(additionalInfoRepository.getAdditionalInfo(profile.getPosition())).flatMap(adInfo->{
+        //       return Mono.just(new UserInfoDto(id, profile, adinfo));
+        //    } );
+        // });
+        return Mono.fromCallable(() -> profileRepository.getProfileById(id))
+        .flatMap(profile -> Mono.fromCallable(() -> additionalInfoRepository.getAdditionalInfo(profile.getPosition()))
+            .map(adInfo -> new UserInfoDto(id, profile, adInfo))
+        );
+
       } 
   
 }
