@@ -15,6 +15,8 @@ import org.springframework.beans.factory.parsing.Problem;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.client.WebClient;
+
 import reactor.core.publisher.Mono;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import reactor.core.publisher.Flux;
@@ -26,11 +28,13 @@ public class MessageController {
 
     private final KafkaProducerService kafkaProducerService;
     private final UserService userService;
+    private final WebClient webClient;
 
     @Autowired
-    public MessageController(KafkaProducerService kafkaProducerService, UserService userService) {
+    public MessageController(KafkaProducerService kafkaProducerService, UserService userService ,WebClient webClient ) {
         this.kafkaProducerService = kafkaProducerService;
         this.userService = userService;
+        this.webClient= webClient;
     }
 
     @GetMapping("/check")
@@ -57,11 +61,27 @@ public class MessageController {
     }
 
 
+    @GetMapping("/source")
+    public Mono<String> sendSource(){
+        return Mono.just("I am source");
+    }
+
+
+
+    @GetMapping("/webtest")
+    public Mono<String> testWebClient(){
+        return  webClient.get().uri("http://34.85.123.208:30080/source")
+                        .retrieve()
+                        .bodyToMono(String.class)
+                        .map(item -> item+" and add this type");
+    }
+
 
     @GetMapping("/auth/{user}")
     public Mono<String> testAuth(@PathVariable String user ){
         return ReactiveSecurityContextHolder.getContext()
         .flatMap(context ->{
+            System.out.println(context);
             return Mono.just("recevier->"+ user);
         });
 
